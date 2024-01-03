@@ -1,7 +1,10 @@
 const UserModel = require("../models/userModel")
 const bcrypt = require("bcrypt")
 var jwt = require('jsonwebtoken');
+var key = "ajay123"
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const addUser = async(req,res)=>{
     try{
@@ -42,6 +45,9 @@ const addUser = async(req,res)=>{
 
 
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 const getUser = async(req,res)=>{
     try{
          let users = await UserModel.find({})
@@ -72,11 +78,18 @@ const getUser = async(req,res)=>{
 }
 
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
  const addData = async(req,res)=>{
     
     try{
         bcrypt.hash(req.body.Password, 10,async function(err, hash) {
-            let detail = new UserModel({...req.body,Password:hash})
+        let detail = new UserModel({...req.body,Password:hash})
         let success = await detail.save()
         if(success){
             res.status(200).json({
@@ -105,9 +118,11 @@ const getUser = async(req,res)=>{
 
 
 
+ ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
- 
+
+
 
   let login = async(req,res)=>{
     try{
@@ -126,10 +141,12 @@ const getUser = async(req,res)=>{
             bcrypt.compare(req.body.Password,user[0].Password,function(err, result) {
 
                 if(result == true){
+                    var token = jwt.sign({data:user[0]},key);
                     res.status(200).json({
                         mssg:"login successful",
                         status:200,
-                         user:user
+                        user:user[0],
+                        token:token
                     })
 
                 }else{
